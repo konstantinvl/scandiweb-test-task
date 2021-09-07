@@ -1,0 +1,15 @@
+.category {
+  display: flex;
+  flex-direction: column;
+  &_name {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 42px;
+  }
+}
+.category_field {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-bottom: 5vh;
+}
