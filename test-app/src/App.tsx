@@ -1,51 +1,17 @@
-import { gql } from "@apollo/client";
 import React from "react";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
-import { client } from "./apollo/apolo";
+import { get } from "./apollo/apolo";
 import Category from "./components/category";
 import Header from "./components/header";
 import ProductPage from "./components/productPage";
-import { DataInt } from "./interfaces/interfaces";
+import { DataInt, ProductInt } from "./interfaces/interfaces";
 import "./styles/App.scss";
 import CartBig from "./components/cart";
 
 class App extends React.Component<{}, DataInt> {
   async start(): Promise<DataInt> {
-    const aa = await client
-      .query({
-        query: gql`
-          {
-            categories {
-              name
-              products {
-                id
-                name
-                inStock
-                gallery
-                description
-                category
-                attributes {
-                  id
-                  name
-                  type
-                  items {
-                    displayValue
-                    value
-                    id
-                  }
-                }
-                prices {
-                  currency
-                  amount
-                }
-                brand
-              }
-            }
-          }
-        `,
-      })
-      .then((result) => result.data);
-    const data: DataInt = await aa;
+    const responce: Promise<DataInt> = await get();
+    const data: DataInt = await responce;
     return data;
   }
   async componentDidMount(): Promise<void> {
@@ -82,12 +48,26 @@ class App extends React.Component<{}, DataInt> {
                     );
                   })
                 : ""}
+              <Route path="/all">
+                {this.state ? (
+                  <Category
+                    category={{
+                      products: this.state.categories.reduce((init, cat) => {
+                        return init.concat(cat.products);
+                      }, [] as ProductInt[]),
+                      name: "All",
+                    }}
+                  />
+                ) : (
+                  ""
+                )}
+              </Route>
             </Switch>
             <Route exact path="/cart">
               <CartBig />
             </Route>
             <Route exact path="/">
-              <Redirect to="/tech" />
+              <Redirect to="/all" />
             </Route>
           </main>
         </BrowserRouter>

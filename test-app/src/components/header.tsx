@@ -2,11 +2,11 @@ import React from "react";
 import "../styles/header.scss";
 import { NavLink } from "react-router-dom";
 import CartPopup from "./cartmini";
-import { Cart, State } from "../interfaces/interfaces";
+import { State } from "../interfaces/interfaces";
 import { connect } from "react-redux";
 import { changeCurrency } from "../redux/actions";
 
-class Header extends React.Component<{
+class Header extends React.PureComponent<{
   currency: string;
   changeCurrency: (currency: string) => {
     payload: string;
@@ -17,6 +17,9 @@ class Header extends React.Component<{
     return (
       <nav>
         <ul className="navigation">
+          <li>
+            <NavLink to="/all">ALL</NavLink>
+          </li>
           <li>
             <NavLink to="/tech">TECH</NavLink>
           </li>

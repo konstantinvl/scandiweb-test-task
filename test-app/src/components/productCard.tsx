@@ -1,4 +1,3 @@
-import { url } from "inspector";
 import React from "react";
 import { connect } from "react-redux";
 import { currensySimbol } from "../functions/functions";
@@ -6,9 +5,9 @@ import { Cart, ProductInt, State } from "../interfaces/interfaces";
 import "../styles/productCard.scss";
 import { addToCart } from "../redux/actions";
 
-class ProductCard extends React.Component<{
+class ProductCard extends React.PureComponent<{
+  state: State;
   product: ProductInt;
-  currency: string;
   addToCart: (product: Cart) => {
     payload: Cart;
     type: string;
@@ -16,8 +15,8 @@ class ProductCard extends React.Component<{
 }> {
   private product: ProductInt;
   constructor(props: {
+    state: State;
     product: ProductInt;
-    currency: string;
     addToCart: (product: Cart) => {
       payload: Cart;
       type: string;
@@ -36,22 +35,28 @@ class ProductCard extends React.Component<{
   }
 
   render() {
+    const { currency } = this.props.state;
+    const { addToCart } = this.props;
     return (
-      <div className="product-card">
-        <div
-          className="outOfStock"
-          style={
-            this.product.inStock
-              ? { visibility: "collapse" }
-              : { visibility: "visible" }
-          }
-        >
-          Out of stock
-        </div>
+      <div
+        className="product-card"
+        style={this.product.inStock ? {} : { color: "#8D8F9A" }}
+      >
         <div
           className="product-image"
           style={{ backgroundImage: `url(${this.product.gallery[0]})` }}
-        ></div>
+        >
+          <div
+            className="outOfStock"
+            style={
+              this.product.inStock
+                ? { visibility: "collapse" }
+                : { visibility: "visible" }
+            }
+          >
+            Out of stock
+          </div>
+        </div>
         <div className="product-info">
           <div
             className="product-info_toCart"
@@ -61,9 +66,9 @@ class ProductCard extends React.Component<{
               })`,
             }}
             onClick={(e) => {
-              e.preventDefault();
-              if (this.product.inStock) {
-                this.props.addToCart({
+              if (this.product.inStock && !this.product.attributes?.length) {
+                e.preventDefault();
+                addToCart({
                   id: this.product.id,
                   brand: this.product.brand,
                   name: this.product.name,
@@ -79,11 +84,10 @@ class ProductCard extends React.Component<{
           ></div>
           <div className="product-info_name">{this.product.name}</div>
           <div className="product-info_price">
-            <span>{currensySimbol(this.props.currency)}</span>
+            <span>{currensySimbol(currency)}</span>
             {
-              this.product.prices.find(
-                (price) => price.currency === this.props.currency
-              )?.amount
+              this.product.prices.find((price) => price.currency === currency)
+                ?.amount
             }
           </div>
         </div>
@@ -93,7 +97,7 @@ class ProductCard extends React.Component<{
 }
 
 const mapStateToProps = (state: State, ownProps: { product: ProductInt }) => {
-  return { currency: state.currency, ...ownProps };
+  return { state, ...ownProps };
 };
 
 export default connect(mapStateToProps, { addToCart })(ProductCard);

@@ -2,9 +2,10 @@ import React from "react";
 import { currensySimbol } from "../functions/functions";
 import { Cart, ProductInt, State } from "../interfaces/interfaces";
 import "../styles/productPage.scss";
-import DOMPurify from "dompurify";
+// import DOMPurify from "dompurify";
 import { connect } from "react-redux";
 import { addToCart } from "../redux/actions";
+import Parser from "html-react-parser";
 
 class ProductPage extends React.Component<
   {
@@ -54,11 +55,15 @@ class ProductPage extends React.Component<
     this.attrMap?.set(attr, option);
     return this.attrMap;
   }
-
+  setDecription(): HTMLElement {
+    const elem = document.createElement("div");
+    elem.innerHTML = this.product.description as string;
+    return elem;
+  }
   componentDidMount() {
     this.setState({
-      attributes: this.attrPreSelect(this.product),
       ...this.state,
+      attributes: this.attrPreSelect(this.product),
     });
   }
 
@@ -73,7 +78,10 @@ class ProductPage extends React.Component<
                 style={{ backgroundImage: `url(${img})` }}
                 key={index}
                 onClick={() => {
-                  this.setState({ mainImg: this.changeMainImg(img) });
+                  this.setState({
+                    ...this.state,
+                    mainImg: this.changeMainImg(img),
+                  });
                 }}
               ></div>
             );
@@ -106,12 +114,13 @@ class ProductPage extends React.Component<
                             title={item.displayValue}
                             onClick={() => {
                               this.setState({
+                                ...this.state,
                                 attributes: this.attrSelect(
                                   attr.name,
                                   item.value
                                 ),
-                                ...this.state,
                               });
+                              console.log();
                             }}
                           >
                             {item.displayValue}
@@ -132,13 +141,16 @@ class ProductPage extends React.Component<
                             }}
                             title={item.displayValue}
                             onClick={() => {
-                              this.setState({
-                                attributes: this.attrSelect(
-                                  attr.name,
-                                  item.value
-                                ),
-                                ...this.state,
-                              });
+                              this.setState(
+                                Object.assign({
+                                  ...this.state,
+                                  attributes: this.attrSelect(
+                                    attr.name,
+                                    item.value
+                                  ),
+                                })
+                              );
+                              console.log(this.attrMap);
                             }}
                           ></div>
                         );
@@ -181,12 +193,14 @@ class ProductPage extends React.Component<
             </div>
             <div
               className="info_info"
-              dangerouslySetInnerHTML={{
-                __html: this.product.description
-                  ? DOMPurify.sanitize(this.product.description)
-                  : "",
-              }}
-            ></div>
+              // dangerouslySetInnerHTML={{
+              //   __html: this.product.description
+              //     ? DOMPurify.sanitize(this.product.description)
+              //     : "",
+              // }}
+            >
+              {Parser(this.product.description ? this.product.description : "")}
+            </div>
           </div>
         </div>
       </div>

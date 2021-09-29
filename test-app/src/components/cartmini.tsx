@@ -1,10 +1,9 @@
 import React from "react";
-import { Cart, State } from "../interfaces/interfaces";
+import { State } from "../interfaces/interfaces";
 import { connect } from "react-redux";
 import PopupProduct from "./popupProduct";
 import { currensySimbol } from "../functions/functions";
 import { Link } from "react-router-dom";
-import { once } from "events";
 
 class CartPopup extends React.Component<State, { show: Boolean }> {
   constructor(props: State) {
@@ -13,6 +12,7 @@ class CartPopup extends React.Component<State, { show: Boolean }> {
   }
 
   render() {
+    const { cart } = this.props;
     return (
       <div className="cart-popup" onClick={(e) => e.stopPropagation()}>
         <div
@@ -23,10 +23,9 @@ class CartPopup extends React.Component<State, { show: Boolean }> {
             })`,
           }}
           onClick={(e) => {
-            this.forceUpdate();
             window.addEventListener(
               "click",
-              (event) => {
+              () => {
                 if (this.state.show) {
                   this.setState({ show: false });
                 }
@@ -51,20 +50,22 @@ class CartPopup extends React.Component<State, { show: Boolean }> {
             this.setState({ show: false });
           }}
         ></div>
-        <div className={this.state.show ? "popup show" : "popup"}>
+        <div
+          className={this.state.show ? "popup show" : "popup"}
+          onClick={() => this.forceUpdate()}
+        >
           <p style={{ fontWeight: 500 }}>
-            <span style={{ fontWeight: 700 }}>My Bag.</span>{" "}
-            {this.props.cart.length} items
+            <span style={{ fontWeight: 700 }}>My Bag.</span> {cart.length} items
           </p>
-          {this.props.cart.map((prod) => (
+          {cart.map((prod) => (
             <PopupProduct product={prod} key={prod.id} />
           ))}
           <div className="popuptotal-price">
             <span>Total:</span>
             <span>
               {currensySimbol(this.props.currency)}
-              {this.props.cart
-                .reduce((previousValue, item, index, array) => {
+              {cart
+                .reduce((previousValue, item) => {
                   let sum = item.price.find(
                     (price) => price.currency === this.props.currency
                   )?.amount;
@@ -89,9 +90,9 @@ class CartPopup extends React.Component<State, { show: Boolean }> {
         </div>
         <div
           className="counter"
-          style={this.props.cart.length > 0 ? {} : { visibility: "hidden" }}
+          style={cart.length > 0 ? {} : { visibility: "hidden" }}
         >
-          {this.props.cart.length > 0 ? this.props.cart.length : ""}
+          {cart.length > 0 ? cart.length : ""}
         </div>
       </div>
     );

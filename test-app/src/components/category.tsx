@@ -5,7 +5,7 @@ import { Categoryint, State } from "../interfaces/interfaces";
 import "../styles/category.scss";
 import ProductCard from "./productCard";
 
-class Category extends React.Component<{
+class Category extends React.PureComponent<{
   category: Categoryint;
   currency: string;
 }> {
@@ -21,10 +21,7 @@ class Category extends React.Component<{
         <div className="category_field">
           {this.category.products.map((product) => {
             return (
-              <Link
-                to={`/${this.category.name}/${product.id}`}
-                key={product.id}
-              >
+              <Link to={`/${product.category}/${product.id}`} key={product.id}>
                 <ProductCard product={product} key={product.id} />
               </Link>
             );

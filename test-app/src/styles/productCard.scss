@@ -42,10 +42,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(196, 196, 196, 0.1);
-    color: rgba(196, 196, 196, 0.7);
-    font-size: 34px;
-    font-weight: 700;
+    background: rgba(255, 255, 255, 0.5);
+    color: #8d8f9a;
+    font-family: Raleway;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 160%;
   }
 }
 .product-image {
@@ -56,6 +59,7 @@
   height: 80%;
   align-self: center;
   cursor: pointer;
+  position: relative;
 }
 .product-info {
   position: relative;

@@ -5,8 +5,8 @@ import { currensySimbol } from "../functions/functions";
 import { Cart, State } from "../interfaces/interfaces";
 import { increace, decreace, changeAttributes } from "../redux/actions";
 
-class PopupProduct extends React.Component<{
-  currency: string;
+class PopupProduct extends React.PureComponent<{
+  state: State;
   product: Cart;
   increace: (id: string) => {
     payload: string;
@@ -29,65 +29,36 @@ class PopupProduct extends React.Component<{
     type: string;
   };
 }> {
-  constructor(props: {
-    currency: string;
-    product: Cart;
-    increace: (id: string) => {
-      payload: string;
-      type: string;
-    };
-    decreace: (id: string) => {
-      payload: string;
-      type: string;
-    };
-    changeAttributes: (
-      id: string,
-      key: string,
-      value: string
-    ) => {
-      payload: {
-        id: string;
-        key: string;
-        value: string;
-      };
-      type: string;
-    };
-  }) {
-    super(props);
-  }
-
   render() {
+    const { currency, cart } = this.props.state;
+    // const product = cart.find(
+    //   (prod) => prod.id === this.props.product.id
+    // ) as Cart;
+    const { product } = this.props;
+    if (!cart.find((prod) => prod.id === this.props.product.id)) {
+      console.log("ne dolgno but nihua");
+    }
     return (
-      <div
-        className="popupcart-product"
-        onMouseEnter={
-          () =>
-            this.forceUpdate() /*I've done this because quantity did not rerender*/
-        }
-      >
+      <div className="popupcart-product">
         <div className="popupinfo">
           <Link
-            to={`/${this.props.product.category}/${this.props.product.id}`}
+            to={`/${product.category}/${product.id}`}
             className="popupinfo_brand"
           >
-            {this.props.product.brand}
+            {product.brand}
           </Link>
           <Link
-            to={`/${this.props.product.category}/${this.props.product.id}`}
+            to={`/${product.category}/${product.id}`}
             className="popupinfo_name"
           >
-            {this.props.product.name}
+            {product.name}
           </Link>
           <span className="popupinfo_price">
-            {currensySimbol(this.props.currency)}
-            {
-              this.props.product.price.find(
-                (price) => price.currency === this.props.currency
-              )?.amount
-            }
+            {currensySimbol(currency)}
+            {product.price.find((price) => price.currency === currency)?.amount}
           </span>
           <div className="popupinfo_attributes">
-            {this.props.product.attributes?.map((attr) => {
+            {product.attributes?.map((attr) => {
               return (
                 <div className="popupattr" key={attr.id}>
                   <p className="popupinfo-title">
@@ -149,25 +120,20 @@ class PopupProduct extends React.Component<{
             })}
           </div>
         </div>
-        <div
-          className="quantity"
-          onClick={() => console.log(this.props.product.quantity)}
-        >
+        <div className="quantity" onClick={() => console.log(product.quantity)}>
           <div
             className="quantity_Btn"
             onClick={() => {
-              this.props.increace(this.props.product.id);
-              this.forceUpdate();
+              this.props.increace(product.id);
             }}
           >
             +
           </div>
-          <div>{this.props.product.quantity}</div>
+          <div>{product.quantity}</div>
           <div
             className="quantity_Btn"
             onClick={() => {
-              this.props.decreace(this.props.product.id);
-              this.forceUpdate();
+              this.props.decreace(product.id);
             }}
           >
             -
@@ -175,7 +141,7 @@ class PopupProduct extends React.Component<{
         </div>
         <div
           className="image"
-          style={{ backgroundImage: `url(${this.props.product.img})` }}
+          style={{ backgroundImage: `url(${product.img})` }}
         ></div>
       </div>
     );
@@ -183,7 +149,7 @@ class PopupProduct extends React.Component<{
 }
 
 const mapStateToProps = (state: State, ownProps: { product: Cart }) => {
-  return { currency: state.currency, ...ownProps };
+  return { state, ...ownProps };
 };
 
 export default connect(mapStateToProps, {
