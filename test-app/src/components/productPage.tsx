@@ -2,7 +2,6 @@ import React from "react";
 import { currensySimbol } from "../functions/functions";
 import { Cart, ProductInt, State } from "../interfaces/interfaces";
 import "../styles/productPage.scss";
-// import DOMPurify from "dompurify";
 import { connect } from "react-redux";
 import { addToCart } from "../redux/actions";
 import Parser from "html-react-parser";
@@ -120,7 +119,6 @@ class ProductPage extends React.Component<
                                   item.value
                                 ),
                               });
-                              console.log();
                             }}
                           >
                             {item.displayValue}
@@ -150,7 +148,6 @@ class ProductPage extends React.Component<
                                   ),
                                 })
                               );
-                              console.log(this.attrMap);
                             }}
                           ></div>
                         );
@@ -176,29 +173,25 @@ class ProductPage extends React.Component<
               onClick={() => {
                 if (this.product.inStock) {
                   this.props.addToCart({
-                    id: this.product.id,
-                    brand: this.product.brand,
-                    name: this.product.name,
+                    ...this.product,
                     quantity: 1,
                     img: this.product.gallery[0],
-                    category: this.product.category,
                     price: this.product.prices,
-                    attributes: this.product.attributes,
-                    chosenAttributes: this.state.attributes,
+                    chosenAttributes: this.state.attributes
+                      ? new Map(
+                          Object.entries(
+                            Object.fromEntries(this.state.attributes.entries())
+                          )
+                        )
+                      : new Map(),
                   });
                 }
+                this.forceUpdate();
               }}
             >
               ADD TO CART
             </div>
-            <div
-              className="info_info"
-              // dangerouslySetInnerHTML={{
-              //   __html: this.product.description
-              //     ? DOMPurify.sanitize(this.product.description)
-              //     : "",
-              // }}
-            >
+            <div className="info_info">
               {Parser(this.product.description ? this.product.description : "")}
             </div>
           </div>

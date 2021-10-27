@@ -21,26 +21,44 @@ export function changeCurrency(currency: string): PayloadAction<string> {
   };
 }
 
-export function increace(id: string): PayloadAction<string> {
+export function increace(
+  id: string,
+  chosenAttributes?: Map<string, string>
+): PayloadAction<{
+  id: string;
+  chosenAttributes: undefined | Map<string, string>;
+}> {
   return {
     type: INCREACE,
-    payload: id,
+    payload: { id, chosenAttributes },
   };
 }
 
-export function decreace(id: string): PayloadAction<string> {
+export function decreace(
+  id: string,
+  chosenAttributes?: Map<string, string>
+): PayloadAction<{
+  id: string;
+  chosenAttributes: undefined | Map<string, string>;
+}> {
   return {
     type: DECREACE,
-    payload: id,
+    payload: { id, chosenAttributes },
   };
 }
 export function changeAttributes(
   id: string,
   key: string,
-  value: string
-): PayloadAction<{ id: string; key: string; value: string }> {
+  value: string,
+  chosenAttributes?: Map<string, string>
+): PayloadAction<{
+  id: string;
+  key: string;
+  value: string;
+  chosenAttributes?: Map<string, string>;
+}> {
   return {
     type: CHANGE_ATTRIBUTES,
-    payload: { id, key, value },
+    payload: { id, key, value, chosenAttributes },
   };
 }

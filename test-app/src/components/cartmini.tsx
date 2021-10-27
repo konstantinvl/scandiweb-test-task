@@ -57,8 +57,8 @@ class CartPopup extends React.Component<State, { show: Boolean }> {
           <p style={{ fontWeight: 500 }}>
             <span style={{ fontWeight: 700 }}>My Bag.</span> {cart.length} items
           </p>
-          {cart.map((prod) => (
-            <PopupProduct product={prod} key={prod.id} />
+          {cart.map((prod, index) => (
+            <PopupProduct product={prod} key={prod.id + index} />
           ))}
           <div className="popuptotal-price">
             <span>Total:</span>

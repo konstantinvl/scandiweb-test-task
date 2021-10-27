@@ -14,8 +14,8 @@ class Cart extends React.PureComponent<State, { show: Boolean }> {
           <p style={{ fontWeight: 500 }}>
             <span style={{ fontSize: "32px", fontWeight: 700 }}>CART</span>
           </p>
-          {cart.map((prod) => (
-            <PopupProduct product={prod} key={prod.id} />
+          {cart.map((prod, index) => (
+            <PopupProduct product={prod} key={prod.id + index} />
           ))}
           <div className="carttotal-price">
             <span>Total:</span>

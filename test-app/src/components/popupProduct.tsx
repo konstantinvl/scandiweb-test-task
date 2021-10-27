@@ -8,36 +8,44 @@ import { increace, decreace, changeAttributes } from "../redux/actions";
 class PopupProduct extends React.PureComponent<{
   state: State;
   product: Cart;
-  increace: (id: string) => {
-    payload: string;
+  increace: (
+    id: string,
+    chosenAttributes?: Map<string, string> | undefined
+  ) => {
+    payload: {
+      id: string;
+      chosenAttributes: Map<string, string> | undefined;
+    };
     type: string;
   };
-  decreace: (id: string) => {
-    payload: string;
+  decreace: (
+    id: string,
+    chosenAttributes?: Map<string, string> | undefined
+  ) => {
+    payload: {
+      id: string;
+      chosenAttributes: Map<string, string> | undefined;
+    };
     type: string;
   };
   changeAttributes: (
     id: string,
     key: string,
-    value: string
+    value: string,
+    chosenAttributes?: Map<string, string> | undefined
   ) => {
     payload: {
       id: string;
       key: string;
       value: string;
+      chosenAttributes?: Map<string, string> | undefined;
     };
     type: string;
   };
 }> {
   render() {
-    const { currency, cart } = this.props.state;
-    // const product = cart.find(
-    //   (prod) => prod.id === this.props.product.id
-    // ) as Cart;
+    const { currency } = this.props.state;
     const { product } = this.props;
-    if (!cart.find((prod) => prod.id === this.props.product.id)) {
-      console.log("ne dolgno but nihua");
-    }
     return (
       <div className="popupcart-product">
         <div className="popupinfo">
@@ -70,9 +78,8 @@ class PopupProduct extends React.PureComponent<{
                         <div
                           key={item.id}
                           className={
-                            this.props.product.chosenAttributes?.get(
-                              attr.name
-                            ) === item.value
+                            product.chosenAttributes?.get(attr.name) ===
+                            item.value
                               ? "popupattr_options-Btn active"
                               : "popupattr_options-Btn"
                           }
@@ -81,7 +88,8 @@ class PopupProduct extends React.PureComponent<{
                             this.props.changeAttributes(
                               this.props.product.id,
                               attr.name,
-                              item.value
+                              item.value,
+                              product.chosenAttributes
                             );
                             this.forceUpdate();
                           }}
@@ -107,7 +115,8 @@ class PopupProduct extends React.PureComponent<{
                             this.props.changeAttributes(
                               this.props.product.id,
                               attr.name,
-                              item.value
+                              item.value,
+                              product.chosenAttributes
                             );
                             this.forceUpdate();
                           }}
@@ -120,11 +129,12 @@ class PopupProduct extends React.PureComponent<{
             })}
           </div>
         </div>
-        <div className="quantity" onClick={() => console.log(product.quantity)}>
+        <div className="quantity">
           <div
             className="quantity_Btn"
             onClick={() => {
-              this.props.increace(product.id);
+              this.props.increace(product.id, product.chosenAttributes);
+              this.forceUpdate();
             }}
           >
             +
@@ -133,7 +143,8 @@ class PopupProduct extends React.PureComponent<{
           <div
             className="quantity_Btn"
             onClick={() => {
-              this.props.decreace(product.id);
+              this.props.decreace(product.id, product.chosenAttributes);
+              this.forceUpdate();
             }}
           >
             -
